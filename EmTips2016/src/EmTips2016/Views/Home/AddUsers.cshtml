@@ -1,0 +1,24 @@
+﻿@using EmTips2016.ViewModels
+@model UserVM
+@addTagHelper "*,Microsoft.AspNet.Mvc.TagHelpers"
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title></title>
+    <link href="~/css/bootstrap.css" rel="stylesheet" />
+    <script src="~/js/jquery.js"></script>
+    <script src="~/js/bootstrap.js"></script>
+</head>
+<body>
+    <form asp-controller="Home" asp-action="AddUser">
+        <input asp-for="UserName" id="Text1" type="text"/>
+        <br />
+        <br />
+        <p>Kod:</p>
+        <input asp-for="Password" type="text" />
+        <input id="Submit1" type="submit" value="submit" class="btn btn-info" />
+    </form>
+
+
+</body>
+</html>

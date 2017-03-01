@@ -1,0 +1,70 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout";
+}
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>Resultat</title>
+    <link href="~/css/bootstrap.css" rel="stylesheet" />
+    <link href="~/css/grayscale.css" rel="stylesheet" />
+    <script src="~/js/jquery.js"></script>
+    <script src="~/js/bootstrap.js"></script>
+    <script src="~/js/grayscale.js"></script>
+
+    <script>
+        $(document).ready(function () {
+
+            // ID of the Google Spreadsheet
+            var spreadsheetID = "1qbMeJDr903S2_eGXWynz4nxqEs5PU1HkWT8J6sZcr-w";
+
+
+            // Make sure it is public or set to Anyone with link can view
+            var url = "https://spreadsheets.google.com/feeds/list/" + spreadsheetID + "/od6/public/values?alt=json";
+
+            $.getJSON(url, function (data) {
+
+                var entry = data.feed.entry;
+
+                $(entry).each(function () {
+                    $('#games').append('<tr id="match' + this.gsx$match.$t + '"><td class="hidden-xs">'
+                        + this.gsx$datum.$t + '</td><td class="hidden-xs">' + this.gsx$grupp.$t + '</td><td>' + this.gsx$hemmalag.$t
+                        + '</td><td>' + this.gsx$bortalag.$t + '</td><td id="result' + this.gsx$match.$t + '">' + this.gsx$homegoals.$t + '-'
+                        + this.gsx$awaygoals.$t + '</td></tr>');
+                });
+
+            });           
+
+        });
+       
+
+    </script>
+    <style>
+        th {
+            color: #1d9b6c;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container" style="margin: 70px -30px">
+        <h2 align="center">Spelschema & Resultat</h2>  <br />
+        <p style="font-size:80%" class="hidden-lg">Surfar du in via en dator får du mer information om respektive match</p>      
+        <div class="table-responsive">
+            <table class="table" id="games">
+                <thead>
+                    <tr>
+                        <th class="hidden-xs">Datum</th>
+                        <th class="hidden-xs">Grupp</th>
+                        <th>Hemmalag</th>
+                        <th>Bortalag</th>
+                        <th>Resultat</th>
+                    </tr>
+                </thead>
+
+            </table>
+        </div>
+    </div>
+    <br />
+    <br />
+</body>
+</html>

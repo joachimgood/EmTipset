@@ -1,0 +1,130 @@
+﻿@using EmTips2016.ViewModels
+@model List<string>
+@addTagHelper "*,Microsoft.AspNet.Mvc.TagHelpers"
+
+@{
+    Layout = "~/Views/Shared/_Layout";
+}
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>Statistik för @Model[0]</title>
+    <link href="~/css/bootstrap.css" rel="stylesheet" />
+    <link href="~/css/grayscale.css" rel="stylesheet" />
+    <script src="~/js/jquery.js"></script>
+    <script src="~/js/bootstrap.js"></script>
+    <script src="~/js/grayscale.js"></script>
+    <script>
+        $(document).ready(function () {
+
+            RenderResultStats();         
+            var id = $('#Hidden0').text();
+           $('#id').append(id);
+        });
+
+        function RenderResultStats(){
+
+            var myArr = [];
+
+            for (var i = 0; i < 37; i++) {
+                var myBet = $('#Hidden' + i).text();
+                myArr.push({ myBet })
+            }
+
+            // ID of the Google Spreadsheet
+            var spreadsheetID = "1qbMeJDr903S2_eGXWynz4nxqEs5PU1HkWT8J6sZcr-w";
+            // Make sure it is public or set to Anyone with link can view
+            var url = "https://spreadsheets.google.com/feeds/list/" + spreadsheetID + "/od6/public/values?alt=json";
+
+            $.getJSON(url, function (data) {
+                var x = 1;
+                //var totalPoints = 0;
+                var entry = data.feed.entry;
+                $(entry).each(function () {
+                    $('#stats').append('<tr id="match' + this.gsx$match.$t + '"><td>' + this.gsx$hemmalag.$t
+                        + ' - ' + this.gsx$bortalag.$t + '</td><td class="hidden-xs" id="result' + this.gsx$match.$t + '">' + this.gsx$homegoals.$t + '-'
+                        + this.gsx$awaygoals.$t + '</td><td id="bet' + this.gsx$match.$t + '">' + myArr[x].myBet + '</td></tr>');
+
+                    x++;
+                    var points = 0;
+                    var result = $('#result' + this.gsx$match.$t).text();
+                    var bet = $('#bet' + this.gsx$match.$t).text();
+                    if (result != "-") {
+
+                        if (bet[0] === result[0] && bet[2] === result[2]) {
+                            points += 10;
+                        }
+                        else {
+                            if (result[0] > result[2] && bet[0] > bet[2]) {
+                                points += 5;
+                            }
+                            if (result[0] < result[2] && bet[0] < bet[2]) {
+                                points += 5;
+                            }
+                            if (result[0] === result[2] && bet[0] === bet[2]) {
+                                points += 5;
+                            }
+                            if (result[0] === bet[0]) {
+                                points += 2;
+                            }
+                            if (result[2] === bet[2]) {
+                                points += 2;
+                            }
+                        }
+                        //totalPoints = totalPoints + points;
+                    }
+                    $('#match' + this.gsx$match.$t).append('<td style="font-weight: bold">' + points + 'p</td>');
+
+                });
+                //$('#stats').append('<tr><td></td><td class="hidden-xs"></td><td></td><td>' + totalPoints + '</td></tr>');
+            });
+        };
+
+    </script>
+    <style>
+        th {
+            color: #1d9b6c;
+        }
+    </style>
+</head>
+<body>
+    <div class="container" style="margin: 70px -30px">
+        <h2 id="id" align="center">Tips för </h2>
+        <div class="btn-group">
+            <a href="~/home/leaderboard" type="button" class="btn btn-default">Tillbaka</a>            
+        </div>
+        <br />
+        <p style="font-size:80%" class="hidden-lg">Om du går in via en dator kan du se mer detaljer för dina tips</p>
+        <div class="table-responsive">
+            <table class="table" id="stats">
+                <thead>
+                    <tr>
+                        <td>Match</td>
+                        <td class="hidden-xs">Resultat</td>
+                        <td>Tips</td>
+                        <td>Poäng</td>
+                    </tr>
+                </thead>
+            </table>
+        </div>  
+        <div class="btn-group">
+            <a href="~/home/leaderboard" type="button" class="btn btn-default">Tillbaka</a>
+        </div>      
+    </div>
+    @{int x = 0;}
+    @foreach (var item in Model)
+    {
+        string y = Convert.ToString(x);
+        <p id="@string.Format("Hidden{0}", x)" hidden>@item</p>
+        x++;
+    }
+   
+    <h4 align="center">Avancemang tips</h4>
+        @Component.Invoke("UserStatsAdv", Model[0])
+
+    <div class="btn-group">
+        <a href="~/home/leaderboard" type="button" class="btn btn-default">Tillbaka</a>
+    </div> 
+
+</body>
+</html>

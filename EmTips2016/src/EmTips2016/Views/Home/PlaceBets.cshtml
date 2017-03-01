@@ -1,0 +1,194 @@
+﻿@addTagHelper "*,Microsoft.AspNet.Mvc.TagHelpers"
+@{
+    Layout = "~/Views/Shared/_Layout";
+}
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>Lägg in tips</title>
+    <link href="~/css/bootstrap.css" rel="stylesheet" />
+    <link href="~/css/grayscale.css" rel="stylesheet" />
+    <script src="~/js/jquery.js"></script>
+    <script src="~/js/bootstrap.js"></script>
+    <script src="~/js/grayscale.js"></script>
+    <script>
+
+        $(document).ready(function () {
+
+            //var bla = $('#countdown').html();
+            //alert(bla);
+            //if (bla === 'Registrering är stängd') {
+            //    $("#usr").remove();
+            //    $("#DeadlineText").remove();
+            //    $("#DeadlineText2").remove();
+            //    $("#DeadlineButton").remove();
+
+            //}
+
+            // ID of the Google Spreadsheet
+            var spreadsheetID = "1qbMeJDr903S2_eGXWynz4nxqEs5PU1HkWT8J6sZcr-w";
+            var url = "https://spreadsheets.google.com/feeds/list/" + spreadsheetID + "/od6/public/values?alt=json";
+
+            //get games
+            $.getJSON(url, function (data) {
+
+                var entry = data.feed.entry;
+
+                $(entry).each(function () {
+                    $('#games').append('<tr><td class="hidden-xs">' + this.gsx$datum.$t + '</td><td class="hidden-xs">' + this.gsx$grupp.$t + '</td><td>' + this.gsx$hemmalag.$t + '</td><td>' + this.gsx$bortalag.$t
+                        + '</td><td><input type="number" min="0" max="9" value="0" style="width: 50px; color: #000" id="resultHome' + this.gsx$match.$t + '"/"> - '
+                        + '<input type="number" min="0" value="0" max="9" style="width: 50px; color: #000;" id="resultAway' + this.gsx$match.$t + '"/"></td></tr>'
+                        );
+                });
+
+            });
+
+        });
+
+        //send bets
+        function sendBets() {
+            var text = "";
+            var bla = $('#countdown').html();
+            if (bla != 'Registrering är stängd') {
+
+
+                var myData = [];
+                myData.push({ name: $('#usr').val() });
+
+                for (var i = 1; i < 37; i++) {
+                    myData.push({
+                        name: $('#resultHome' + i).val() + '-' + $('#resultAway' + i).val()
+                    })
+                }
+
+                $.ajax({
+                    type: 'POST',
+                    url: '../home/PlaceBets',
+                    data: { items: myData },
+                    dataType: 'json',
+                    error: function (err) {
+                        text = err;
+                    }
+                });
+
+                alert("Tack, nu ska du tippa hur långt varje lag går");
+                $('input').val('');
+                window.location.replace("../home/PlaceAdvance");
+            }
+            else {
+                alert("Registrering är stängd");
+
+            }
+        }
+
+        function validateInputFields() {
+
+            var x = 0;
+            for (var i = 1; i < 37; i++) {
+                if ($('#resultHome' + i).val() === "" || $('#resultAway' + i).val() === "") {
+                    x++;                    
+                }
+                if (x > 0) {
+                    alert("Du måste skriva in ett resultat för varje match");
+                    break;
+                }
+               
+            }
+                if ($('#usr').val() === "" || x == 0) {
+                    alert("Du måste fylla i ett användarnamn")
+                }                
+
+        };
+
+
+
+    </script>
+    <script>
+
+        CountDownTimer('06/10/2016 8:30 PM', 'countdown');
+
+        function CountDownTimer(dt, id) {
+            var end = new Date(dt);
+
+            var _second = 1000;
+            var _minute = _second * 60;
+            var _hour = _minute * 60;
+            var _day = _hour * 24;
+            var timer;
+
+            function showRemaining() {
+                var now = new Date();
+                var distance = end - now;
+                if (distance < 0) {
+
+                    clearInterval(timer);
+                    document.getElementById(id).innerHTML = 'Registrering är stängd';
+
+                    return;
+                }
+                var days = Math.floor(distance / _day);
+                var hours = Math.floor((distance % _day) / _hour);
+                var minutes = Math.floor((distance % _hour) / _minute);
+                var seconds = Math.floor((distance % _minute) / _second);
+
+                document.getElementById(id).innerHTML = days + ' dagar ';
+                document.getElementById(id).innerHTML += hours + ' tim ';
+                document.getElementById(id).innerHTML += minutes + ' min ';
+                document.getElementById(id).innerHTML += seconds + ' sek innan registrering stänger';
+            }
+
+            timer = setInterval(showRemaining, 1000);
+        }
+
+    </script>
+    <style>
+        th {
+            color: #1d9b6c;
+        }
+    </style>
+</head>
+<body>
+
+
+
+    <div class="container" style="margin: 70px -30px">
+        <p>Nedan skriver du in ditt tips. Tänk igenom ditt tips noga, när du väl tippat kommer du inte kunna ändra ditt tips.</p>
+        <div class="progress">
+            <div class="progress-bar progress-bar-success progress-bar-striped" role="progressbar"
+                 aria-valuenow="50" aria-valuemin="0" aria-valuemax="100" style="width:50%">
+                Steg 1 av 2
+            </div>
+        </div>
+        <br />
+            <p style="font-size:80%" class="hidden-lg">Surfar du in via en dator får du mer information om respektive match</p>        
+        <div class="table-responsive">
+            <table class="table" id="games">
+                <thead>
+                    <tr>
+                        <th class="hidden-xs">Datum</th>
+                        <th class="hidden-xs">Grupp</th>
+                        <th>Hemmalag</th>
+                        <th>Bortalag</th>
+                    </tr>
+                </thead>
+            </table>
+        </div>
+
+    </div>
+    <div id="countdown"></div>
+    <br />
+    <p id="DeadlineText2" style="font-size: 100%">Skriv in ditt användarnamn nedan.</p>
+    <input type="text" id="usr" style="width: 180px; color: #000">
+    <input type="submit" id="DeadlineButton" class="btn btn-default" onclick="sendBets()" />
+    <br />
+    <p id="DeadlineText" style="font-size: 100%">Obs! Är ditt användarnamn inte registrerat av admin så kommer ditt tips inte läggas in.</p>
+    <br />
+    <br />
+    <p>Har du redan gjort detta steg men inte tippat slutspelet? </p>
+    <a href="~/home/placeadvance" type="button" class="btn btn-default">Hoppa direkt till nästa steg</a> 
+
+    
+
+
+</body>
+</html>

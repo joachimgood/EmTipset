@@ -1,0 +1,443 @@
+﻿@using EmTips2016.ViewModels
+@model AdvanceTeamVM
+@addTagHelper "*,Microsoft.AspNet.Mvc.TagHelpers"
+@{
+    Layout = "~/Views/Shared/_Layout";
+}
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>Tippa avancemang</title>
+    <link href="~/css/bootstrap.css" rel="stylesheet" />
+    <link href="~/css/grayscale.css" rel="stylesheet" />
+    <script src="~/js/jquery.js"></script>
+    <script src="~/js/bootstrap.js"></script>
+    <script src="~/js/grayscale.js"></script>
+    <script>
+        $(document).ready(function () {
+
+            
+           
+
+            $('select').change(function () {               
+
+                var group = [];
+                var eight = [];
+                var quart = [];
+                var semi = [];
+                var final = [];
+                var champ = [];
+
+                for (var i = 0; i < 24; i++) {
+
+                    if ($("#myselect" + i).val() === "Gruppspel") {
+                        group.push({
+                            name: $("#myselect" + i).val()
+                        })
+                    }
+                    if ($("#myselect" + i).val() === "Åttondelsfinal") {
+                        eight.push({
+                            name: $("#myselect" + i).val()
+                        })
+                    }
+                    if ($("#myselect" + i).val() === "Kvartsfinal") {
+                        quart.push({
+                            name: $("#myselect" + i).val()
+                        })
+                    }
+                    if ($("#myselect" + i).val() === "Semifinal") {
+                        semi.push({
+                            name: $("#myselect" + i).val()
+                        })
+                    }
+                    if ($("#myselect" + i).val() === "Final") {
+                        final.push({
+                            name: $("#myselect" + i).val()
+                        })
+                    }
+                    if ($("#myselect" + i).val() === "Mästare") {
+                        champ.push({
+                            name: $("#myselect" + i).val()
+                        })
+                    }
+
+
+                }
+                $('#group').text(group.length);
+                $('#eight').text(eight.length);
+                $('#quart').text(quart.length);
+                $('#semi').text(semi.length);
+                $('#final').text(final.length);
+                $('#champ').text(champ.length);
+
+                if (champ.length == 1) {
+                    $('.champ').css('color', '#1d9b6c');
+                }
+                else {
+                    $('.champ').css('color', 'white');
+                }
+                if (final.length == 1) {
+                    $('.final').css('color', '#1d9b6c');
+                }
+                else {
+                    $('.final').css('color', 'white');
+                }
+                if (semi.length == 2) {
+                    $('.semi').css('color', '#1d9b6c');
+                }
+                else {
+                    $('.semi').css('color', 'white');
+                }
+                if (quart.length == 4) {
+                    $('.quart').css('color', '#1d9b6c');
+                }
+                else {
+                    $('.quart').css('color', 'white');
+                }
+                if (eight.length == 8) {
+                    $('.eight').css('color', '#1d9b6c');
+                }
+                else {
+                    $('.eight').css('color', 'white');
+                }
+                if (group.length == 8) {
+                    $('.group').css('color', '#1d9b6c');
+                }
+                else {
+                    $('.group').css('color', 'white');
+                }
+            });
+        });
+    </script>
+    <script>
+        
+    </script>
+    
+    <style>
+        p {
+            line-height: 100%;
+            display: inline;
+            
+        }
+        label{
+            font-size:80%;
+        }
+
+        h3 {
+            display: inline;
+        }
+
+        .AdvDiv {
+            background-color: black;
+            position: fixed;
+            top: 70px;
+            margin: 0 auto;
+            width: 40ex;
+            outline: 1px #1d9b6c;
+            padding-top: 10px;
+            padding-right: 10px;
+            padding-bottom: 10px;
+            padding-left: 10px;
+            opacity: 0.90;
+            filter: alpha(opacity=40);
+            z-index: 1000;
+            border-radius: 10px;
+            border: 2px solid #1d9b6c;
+        }
+        .select{
+            width: 100px;
+        }
+        
+    </style>
+</head>
+<body>
+
+    <div class="AdvDiv">
+        <p>Du har valt:</p><br />
+        <p class="group">Åker ur i grupp:   </p><p class="group" id="group"></p><p class="group"> av 8</p><br />
+        <p class="eight">Lag till åttondel:   </p><p class="eight" id="eight"></p><p class="eight"> av 8</p><br />
+        <p class="quart">Lag till kvartsfinal:   </p><p class="quart" id="quart"></p><p class="quart"> av 4</p><br />
+        <p class="semi">Lag till semifinal:   </p><p class="semi" id="semi"></p><p class="semi"> av 2</p><br />
+        <p class="final">Förlorare final:   </p><p class="final" id="final"></p><p class="final"> av 1</p><br />
+        <p class="champ">Mästare:   </p><p class="champ" id="champ"></p><p class="champ"> av 1</p><br />
+    </div>
+
+    <div class="container" style="margin: 170px -30px">
+        <form asp-controller="Home" asp-action="PlaceAdvance" style="font-size:x-large">
+            <div class="hidden-xs progress">
+                <div class="hidden-xs progress-bar progress-bar-success progress-bar-striped" role="progressbar"
+                     aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width:100%">
+                    Steg 2 av 2
+                </div>
+            </div>
+            <div class="col-xs-8 col-sm-4 col-md-4">
+                <div class="form-group">
+                    <br /><br />
+                    <h3>Grupp A</h3><br />
+                    <label asp-for="Frankrike"></label>
+                    <select id="myselect0" asp-for="Frankrike" class="form-control">
+                        <option>Gruppspel</option>
+                        <option>Åttondelsfinal</option>
+                        <option>Kvartsfinal</option>
+                        <option>Semifinal</option>
+                        <option>Final</option>
+                        <option>Mästare</option>
+                    </select>
+                    <label asp-for="Rumänien"></label>
+                    <select id="myselect1" asp-for="Rumänien" class="form-control">
+                        <option>Gruppspel</option>
+                        <option>Åttondelsfinal</option>
+                        <option>Kvartsfinal</option>
+                        <option>Semifinal</option>
+                        <option>Final</option>
+                        <option>Mästare</option>
+                    </select>
+                    <label asp-for="Albanien"></label>
+                    <select id="myselect2" asp-for="Albanien" class="form-control">
+                        <option>Gruppspel</option>
+                        <option>Åttondelsfinal</option>
+                        <option>Kvartsfinal</option>
+                        <option>Semifinal</option>
+                        <option>Final</option>
+                        <option>Mästare</option>
+                    </select>
+                    <label asp-for="Schweiz"></label>
+                    <select id="myselect3" asp-for="Schweiz" class="form-control">
+                        <option>Gruppspel</option>
+                        <option>Åttondelsfinal</option>
+                        <option>Kvartsfinal</option>
+                        <option>Semifinal</option>
+                        <option>Final</option>
+                        <option>Mästare</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="col-xs-8 col-sm-4 col-md-4">
+                <div class="form-group">
+                    <br /><br />
+                    <h3>Grupp B</h3><br />
+                    <label asp-for="England"></label>
+                    <select id="myselect4" asp-for="England" class="form-control">
+                        <option>Gruppspel</option>
+                        <option>Åttondelsfinal</option>
+                        <option>Kvartsfinal</option>
+                        <option>Semifinal</option>
+                        <option>Final</option>
+                        <option>Mästare</option>
+                    </select>
+                    <label asp-for="Ryssland"></label>
+                    <select id="myselect5" asp-for="Ryssland" class="form-control">
+                        <option>Gruppspel</option>
+                        <option>Åttondelsfinal</option>
+                        <option>Kvartsfinal</option>
+                        <option>Semifinal</option>
+                        <option>Final</option>
+                        <option>Mästare</option>
+                    </select>
+                    <label asp-for="Wales"></label>
+                    <select id="myselect6" asp-for="Wales" class="form-control">
+                        <option>Gruppspel</option>
+                        <option>Åttondelsfinal</option>
+                        <option>Kvartsfinal</option>
+                        <option>Semifinal</option>
+                        <option>Final</option>
+                        <option>Mästare</option>
+                    </select>
+                    <label asp-for="Slovakien"></label>
+                    <select id="myselect7" asp-for="Slovakien" class="form-control">
+                        <option>Gruppspel</option>
+                        <option>Åttondelsfinal</option>
+                        <option>Kvartsfinal</option>
+                        <option>Semifinal</option>
+                        <option>Final</option>
+                        <option>Mästare</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="col-xs-8 col-sm-4 col-md-4">
+                <div class="form-group">
+                    <br /><br />
+                    <h3>Grupp C</h3><br />
+                    <label asp-for="Tyskland"></label>
+                    <select id="myselect8" asp-for="Tyskland" class="form-control">
+                        <option>Gruppspel</option>
+                        <option>Åttondelsfinal</option>
+                        <option>Kvartsfinal</option>
+                        <option>Semifinal</option>
+                        <option>Final</option>
+                        <option>Mästare</option>
+                    </select>
+                    <label asp-for="Polen"></label>
+                    <select id="myselect9" asp-for="Polen" class="form-control">
+                        <option>Gruppspel</option>
+                        <option>Åttondelsfinal</option>
+                        <option>Kvartsfinal</option>
+                        <option>Semifinal</option>
+                        <option>Final</option>
+                        <option>Mästare</option>
+                    </select>
+                    <label asp-for="Ukraina"></label>
+                    <select id="myselect10" asp-for="Ukraina" class="form-control">
+                        <option>Gruppspel</option>
+                        <option>Åttondelsfinal</option>
+                        <option>Kvartsfinal</option>
+                        <option>Semifinal</option>
+                        <option>Final</option>
+                        <option>Mästare</option>
+                    </select>
+                    <label asp-for="Nordirland"></label>
+                    <select id="myselect11" asp-for="Nordirland" class="form-control">
+                        <option>Gruppspel</option>
+                        <option>Åttondelsfinal</option>
+                        <option>Kvartsfinal</option>
+                        <option>Semifinal</option>
+                        <option>Final</option>
+                        <option>Mästare</option>
+                    </select>
+                </div>
+            </div>
+            <div class="col-xs-8 col-sm-4 col-md-4">
+                <div class="form-group">
+                    <br /><br />
+                    <h3>Grupp D</h3><br />
+                    <label asp-for="Spanien"></label>
+                    <select id="myselect12" asp-for="Spanien" class="form-control">
+                        <option>Gruppspel</option>
+                        <option>Åttondelsfinal</option>
+                        <option>Kvartsfinal</option>
+                        <option>Semifinal</option>
+                        <option>Final</option>
+                        <option>Mästare</option>
+                    </select>
+                    <label asp-for="Tjeckien"></label>
+                    <select id="myselect13" asp-for="Tjeckien" class="form-control">
+                        <option>Gruppspel</option>
+                        <option>Åttondelsfinal</option>
+                        <option>Kvartsfinal</option>
+                        <option>Semifinal</option>
+                        <option>Final</option>
+                        <option>Mästare</option>
+                    </select>
+                    <label asp-for="Turkiet"></label>
+                    <select id="myselect14" asp-for="Turkiet" class="form-control">
+                        <option>Gruppspel</option>
+                        <option>Åttondelsfinal</option>
+                        <option>Kvartsfinal</option>
+                        <option>Semifinal</option>
+                        <option>Final</option>
+                        <option>Mästare</option>
+                    </select>
+                    <label asp-for="Kroatien"></label>
+                    <select id="myselect15" asp-for="Kroatien" class="form-control">
+                        <option>Gruppspel</option>
+                        <option>Åttondelsfinal</option>
+                        <option>Kvartsfinal</option>
+                        <option>Semifinal</option>
+                        <option>Final</option>
+                        <option>Mästare</option>
+                    </select>
+                </div>
+            </div>
+            <div class="col-xs-8 col-sm-4 col-md-4">
+                <div class="form-group">
+                    <br /><br />
+                    <h3>Grupp E</h3><br />
+                    <label asp-for="Belgien"></label>
+                    <select id="myselect16" asp-for="Belgien" class="form-control">
+                        <option>Gruppspel</option>
+                        <option>Åttondelsfinal</option>
+                        <option>Kvartsfinal</option>
+                        <option>Semifinal</option>
+                        <option>Final</option>
+                        <option>Mästare</option>
+                    </select>
+                    <label asp-for="Italien"></label>
+                    <select id="myselect17" asp-for="Italien" class="form-control">
+                        <option>Gruppspel</option>
+                        <option>Åttondelsfinal</option>
+                        <option>Kvartsfinal</option>
+                        <option>Semifinal</option>
+                        <option>Final</option>
+                        <option>Mästare</option>
+                    </select>
+                    <label asp-for="Irland"></label>
+                    <select id="myselect18" asp-for="Irland" class="form-control">
+                        <option>Gruppspel</option>
+                        <option>Åttondelsfinal</option>
+                        <option>Kvartsfinal</option>
+                        <option>Semifinal</option>
+                        <option>Final</option>
+                        <option>Mästare</option>
+                    </select>
+                    <label asp-for="Sverige"></label>
+                    <select id="myselect19" asp-for="Sverige" class="form-control">
+                        <option>Gruppspel</option>
+                        <option>Åttondelsfinal</option>
+                        <option>Kvartsfinal</option>
+                        <option>Semifinal</option>
+                        <option>Final</option>
+                        <option>Mästare</option>
+                    </select>
+                </div>
+            </div>
+            <div class="col-xs-8 col-sm-4 col-md-4">
+                <div class="form-group">
+                    <br /><br />
+                    <h3>Grupp F</h3><br />
+                    <label asp-for="Portugal"></label>
+                    <select id="myselect20" asp-for="Portugal" class="form-control">
+                        <option>Gruppspel</option>
+                        <option>Åttondelsfinal</option>
+                        <option>Kvartsfinal</option>
+                        <option>Semifinal</option>
+                        <option>Final</option>
+                        <option>Mästare</option>
+                    </select>
+                    <label asp-for="Island"></label>
+                    <select id="myselect21" asp-for="Island" class="form-control">
+                        <option>Gruppspel</option>
+                        <option>Åttondelsfinal</option>
+                        <option>Kvartsfinal</option>
+                        <option>Semifinal</option>
+                        <option>Final</option>
+                        <option>Mästare</option>
+                    </select>
+                    <label asp-for="Österrike"></label>
+                    <select id="myselect22" asp-for="Österrike" class="form-control">
+                        <option>Gruppspel</option>
+                        <option>Åttondelsfinal</option>
+                        <option>Kvartsfinal</option>
+                        <option>Semifinal</option>
+                        <option>Final</option>
+                        <option>Mästare</option>
+                    </select>
+                    <label asp-for="Ungern"></label>
+                    <select id="myselect23" asp-for="Ungern" class="form-control">
+                        <option>Gruppspel</option>
+                        <option>Åttondelsfinal</option>
+                        <option>Kvartsfinal</option>
+                        <option>Semifinal</option>
+                        <option>Final</option>
+                        <option>Mästare</option>
+                    </select>
+                </div>
+            </div>
+            
+            <br />
+            <br />
+            <label asp-for="Username"></label>
+            <br />
+            <input asp-for="Username" type="text" style="color: #000; width: 200px;" />
+            <button type="submit" class="btn btn-default">Skicka in tips</button>
+            <br />
+            <p style="font-size: 80%">Obs! Är ditt användarnamn inte registrerat av admin så kommer ditt tips inte läggas in.</p>
+            <br /><br />
+
+
+        </form>
+    </div>
+</body>
+</html>

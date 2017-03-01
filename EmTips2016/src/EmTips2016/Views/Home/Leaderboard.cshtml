@@ -1,0 +1,132 @@
+﻿@using EmTips2016.ViewModels
+@model LeaderboardVM[]
+@addTagHelper "*,Microsoft.AspNet.Mvc.TagHelpers"
+
+@{
+    Layout = "~/Views/Shared/_Layout";
+}
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <link href="~/css/bootstrap.css" rel="stylesheet" />
+    <link href="~/css/grayscale.css" rel="stylesheet" />
+    <script src="~/js/jquery.js"></script>
+    <script src="~/js/bootstrap.js"></script>
+    <script src="~/js/grayscale.js"></script>
+    <title>Topplita</title>
+
+    <script>
+
+        $(document).ready(function () {
+            CalcResults();
+            //CalcAdv();
+        });
+
+
+        function ViewUserStats(id) {
+            window.location.replace("../home/userstats/" + id);
+
+        };
+
+        function CalcResults(){
+
+            // ID of the Google Spreadsheet
+            var spreadsheetID = "1qbMeJDr903S2_eGXWynz4nxqEs5PU1HkWT8J6sZcr-w"
+            var url = "https://spreadsheets.google.com/feeds/list/" + spreadsheetID + "/od6/public/values?alt=json";
+            var myData = [];
+
+            $.getJSON(url, function (data) {
+                var entry = data.feed.entry;
+
+                $(entry).each(function () {
+
+                    myData.push({
+                        name: this.gsx$homegoals.$t + '-'
+                        + this.gsx$awaygoals.$t
+                    })
+
+                });
+
+                $.ajax({
+                    type: 'POST',
+                    url: '../home/CalcStats',
+                    data: { items: myData },
+                    dataType: 'json',
+                    error: function (err) {
+                        //alert(err);
+                    }
+                });
+            });
+
+        };
+
+
+
+    </script>
+    <style>
+        th {
+            color: #1d9b6c;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="container" style="margin: 70px -30px">
+        <h2 align="center">Topplista</h2>
+        <p>Klicka på ett namn för att se poängdetaljer</p>
+        <h3 align="center">Grattis Johan Hellström som kammade hem 1350kr!</h3>
+        <div class="table-responsive">
+            <table class="table" id="games">
+                <thead>
+                    <tr>
+                        <th>Placering</th>
+                        <th>Namn</th>
+                        <th>Poäng</th>
+                    </tr>
+                </thead>
+                @{int plc = 1; }
+                @for (int i = 0; i < Model.Length; i++)
+                {
+                    @if (i != 0)
+                    {
+                        @if (Model[i].Points == Model[i - 1].Points)
+                    {
+                        plc = plc - 1;
+                    }
+                    }
+
+                    if (plc == 1)
+                    {
+                        <tr style="font-weight:bold; cursor: pointer" onclick="ViewUserStats(@Model[i].Id)">
+                            <td style="font-weight: bold">@plc</td>
+                            <td><span class="glyphicon glyphicon-user"></span> @Model[i].Username</td>
+                            <td>@Model[i].Points</td>
+                        </tr>
+                    }
+                    if (plc == 2)
+                    {
+                        <tr style="cursor: pointer" onclick="ViewUserStats(@Model[i].Id)">
+                            <td style="font-weight: bold">@plc</td>
+                            <td><span class="glyphicon glyphicon-user"></span> @Model[i].Username</td>
+                            <td>@Model[i].Points</td>
+                        </tr>
+                    }
+                    if (plc > 2)
+                    {
+                        <tr onclick="ViewUserStats(@Model[i].Id)" style="cursor: pointer">
+                            <td style="font-weight: bold">@plc</td>
+                            <td><span class="glyphicon glyphicon-user"></span> @Model[i].Username</td>
+                            <td>@Model[i].Points</td>
+                        </tr>
+                    }
+                    plc++;
+                }
+
+            </table>
+        </div>
+    </div>
+    <br />
+    <br />
+
+</body>
+</html>

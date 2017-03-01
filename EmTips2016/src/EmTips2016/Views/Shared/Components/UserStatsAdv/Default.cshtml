@@ -1,0 +1,170 @@
+﻿@model List<string>
+@addTagHelper "*,Microsoft.AspNet.Mvc.TagHelpers"
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title></title>
+    <link href="~/css/bootstrap.css" rel="stylesheet" />
+    <link href="~/css/grayscale.css" rel="stylesheet" />
+    <script src="~/js/jquery.js"></script>
+    <script src="~/js/bootstrap.js"></script>
+    <script src="~/js/grayscale.js"></script>
+
+    <script>
+        $(document).ready(function () {
+
+            CalcAdv();
+
+        });
+
+        function CalcAdv() {
+
+            var myArr = [];
+
+            for (var i = 0; i < 24; i++) {
+                var myBet = $('#HiddenAdv' + i).text();
+                myArr.push({ myBet })
+            }
+
+            var spreadsheetID = "1_KenGzfr6IpEmh78JExLSTVjOBOSHkWOViPr3GmJYhk"
+            var url = "https://spreadsheets.google.com/feeds/list/" + spreadsheetID + "/od6/public/values?alt=json";
+            var myData = [];
+
+            $.getJSON(url, function (data) {
+                var entry = data.feed.entry;
+                var counter = 0;
+                //var totalPointsAdv = 0;
+                $(entry).each(function () {
+                    $('#statsAdv').append('<tr id="Lag' + this.gsx$lag.$t + '"><td>' + this.gsx$lag.$t + '</td><td class="hidden-xs" id="result'
+                        + this.gsx$lag.$t + '">' + this.gsx$avancemang.$t + '</td><td id="bet' + this.gsx$lag.$t + '">' + myArr[counter].myBet + '</td></tr>');
+                    counter++;
+
+                    var pointsAdv = 0;
+                    var resultAdv = $('#result' + this.gsx$lag.$t).text();
+                    var betAdv = $('#bet' + this.gsx$lag.$t).text();
+                    if (resultAdv != "-") {
+
+                        if (resultAdv == "Mästare") {
+                            if (betAdv == resultAdv) {
+                                pointsAdv = 15;
+                            }
+                            if (betAdv == "Final") {
+                                pointsAdv = 8;
+                            }
+                            if (betAdv == "Semifinal") {
+                                pointsAdv = 6;
+                            }
+                            if (betAdv == "Kvartsfinal") {
+                                pointsAdv = 4;
+                            }
+                            if (betAdv == "Åttondelsfinal") {
+                                pointsAdv = 2;
+                            }
+                        }
+                        if (resultAdv == "Final") {
+                            if (betAdv == resultAdv) {
+                                pointsAdv = 10;
+                            }
+                            if (betAdv == "Mästare") {
+                                pointsAdv = 8;
+                            }
+                            if (betAdv == "Semifinal") {
+                                pointsAdv = 6;
+                            }
+                            if (betAdv == "Kvartsfinal") {
+                                pointsAdv = 4;
+                            }
+                            if (betAdv == "Åttondelsfinal") {
+                                pointsAdv = 2;
+                            }
+                        }
+                        if (resultAdv == "Semifinal") {
+                            if (betAdv == resultAdv) {
+                                pointsAdv = 8;
+                            }
+                            if (betAdv == "Final") {
+                                pointsAdv = 6;
+                            }
+                            if (betAdv == "Mästare") {
+                                pointsAdv = 6;
+                            }
+                            if (betAdv == "Kvartsfinal") {
+                                pointsAdv = 4;
+                            }
+                            if (betAdv == "Åttondelsfinal") {
+                                pointsAdv = 2;
+                            }
+                        }
+                        if (resultAdv == "Kvartsfinal") {
+                            if (betAdv == resultAdv) {
+                                pointsAdv = 6;
+                            }
+                            if (betAdv == "Final") {
+                                pointsAdv = 4;
+                            }
+                            if (betAdv == "Semifinal") {
+                                pointsAdv = 4;
+                            }
+                            if (betAdv == "Mästare") {
+                                pointsAdv = 4;
+                            }
+                            if (betAdv == "Åttondelsfinal") {
+                                pointsAdv = 2;
+                            }
+                        }
+                        if (resultAdv == "Åttondelsfinal") {
+                            if (betAdv == resultAdv) {
+                                pointsAdv = 4;
+                            }
+                            if (betAdv == "Final") {
+                                pointsAdv = 2;
+                            }
+                            if (betAdv == "Semifinal") {
+                                pointsAdv = 2;
+                            }
+                            if (betAdv == "Kvartsfinal") {
+                                pointsAdv = 2;
+                            }
+                        }
+                        if (resultAdv == "Gruppspel" && resultAdv == betAdv) {
+                            pointsAdv = 1;
+                        }
+
+                       // totalPointsAdv = totalPointsAdv + pointsAdv;
+                    }
+                    $('#Lag' + this.gsx$lag.$t).append('<td style="font-weight: bold">' + pointsAdv + 'p</td>');
+                });
+               // $('#statsAdv').append('<tr><td></td><td class="hidden-xs"></td><td></td style = "font-weight: bold">' + totalPointsAdv + '</td></tr>');
+                
+            });
+
+        }
+    </script>
+</head>
+<body>
+
+
+    @{int x = 0;}
+    @foreach (var item in Model)
+    {
+        string y = Convert.ToString(x);
+        <p id="@string.Format("HiddenAdv{0}", x)" hidden>@item</p>
+        x++;
+    }
+    @*<p style="color: red">OBS! Har för närvarande problem med poängspalten i nedan tabell och jobbar stenhårt på det. Om det står 0 poäng på ett lag där du borde fått poäng behöver du inte oroa dig, korrekt poäng är tillagda i din statistik</p>*@
+    <div class="container" style="margin: 70px -30px">
+        <div class="table-responsive">
+            <table class="table" id="statsAdv">
+                <thead>
+                    <tr>
+                        <td>Lag</td>
+                        <td class="hidden-xs">Eliminerad i</td>
+                        <td>Tips</td>
+                        <td>Poäng</td>
+                    </tr>
+                </thead>
+            </table>
+        </div>
+    </div>
+</body>
+</html>
